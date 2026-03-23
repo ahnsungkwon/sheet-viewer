@@ -183,7 +183,7 @@ transition:all .15s;
 // ============================================================
 // 📌 여기에 Apps Script 배포 URL을 붙여넣으세요
 // ============================================================
-const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzztlXhtV0kALZUZlkKLZpfXCjd5-35N6p-5m9gaL2BhzHFCIFk4ZbYEUI21yJqj2S7_Q/exec';
 
 let SHEETS = [];
 let activeIdx = 0;
@@ -228,6 +228,13 @@ async function loadData() {
     }
 
     SHEETS = data;
+    // 최신 날짜가 왼쪽(먼저)에 오도록 정렬
+    SHEETS.sort(function(a, b) {
+      var ap = a.date.split('/'), bp = b.date.split('/');
+      var av = parseInt(ap[0])*100 + parseInt(ap[1]);
+      var bv = parseInt(bp[0])*100 + parseInt(bp[1]);
+      return bv - av;
+    });
     activeIdx = 0;
     caseIdxMap = SHEETS.map(() => 0);
     phaseMap = SHEETS.map(() => 'before');

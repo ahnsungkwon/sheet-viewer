@@ -7,504 +7,155 @@
 <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
---bg:#f4f3f0;--card:#fff;--text:#1a1a1a;--sub:#555;--muted:#999;--border:#e5e3de;
---accent:#2b5592;--accent-light:#eaf1fb;
---before-c:#5a6a80;--before-bg:#f0f2f5;--before-bd:#d0d6de;
---after-c:#d04818;--after-bg:#fff0e8;--after-bd:#f0b090;
---cancel-c:#c74444;--change-c:#b87a1a;--supp-c:#1e8858;--erp-c:#6060b0;
---cancel-bg:#fce8e8;--change-bg:#fef4de;--supp-bg:#e5f5ed;--erp-bg:#eeeef8;
---done:#1e8858;--done-bg:#e5f5ed;--undone:#c74444;--undone-bg:#fce8e8;
---r:12px;--rs:8px;
-}
-[data-theme="dark"]{
---bg:#1a1a1e;--card:#26262b;--text:#e8e8e8;--sub:#aaa;--muted:#666;--border:#3a3a40;
---accent:#6ba3e8;--accent-light:#1e2d42;
---before-c:#8899aa;--before-bg:#22252a;--before-bd:#3a4050;
---after-c:#f08050;--after-bg:#3a2218;--after-bd:#805030;
---cancel-c:#e87070;--change-c:#dba050;--supp-c:#50c080;--erp-c:#9090d0;
---cancel-bg:#3a2020;--change-bg:#3a2e18;--supp-bg:#1a3020;--erp-bg:#28283a;
---done:#50c080;--done-bg:#1a3020;--undone:#e87070;--undone-bg:#3a2020;
-}
+:root{--bg:#f4f3f0;--card:#fff;--text:#1a1a1a;--sub:#555;--muted:#999;--border:#e5e3de;--accent:#2b5592;--accent-light:#eaf1fb;--before-c:#5a6a80;--before-bg:#f0f2f5;--before-bd:#d0d6de;--after-c:#d04818;--after-bg:#fff0e8;--after-bd:#f0b090;--cancel-c:#c74444;--change-c:#b87a1a;--supp-c:#1e8858;--erp-c:#6060b0;--cancel-bg:#fce8e8;--change-bg:#fef4de;--supp-bg:#e5f5ed;--erp-bg:#eeeef8;--done:#1e8858;--done-bg:#e5f5ed;--undone:#c74444;--undone-bg:#fce8e8;--r:12px;--rs:8px}
+[data-theme="dark"]{--bg:#1a1a1e;--card:#26262b;--text:#e8e8e8;--sub:#aaa;--muted:#666;--border:#3a3a40;--accent:#6ba3e8;--accent-light:#1e2d42;--before-c:#8899aa;--before-bg:#22252a;--before-bd:#3a4050;--after-c:#f08050;--after-bg:#3a2218;--after-bd:#805030;--cancel-c:#e87070;--change-c:#dba050;--supp-c:#50c080;--erp-c:#9090d0;--cancel-bg:#3a2020;--change-bg:#3a2e18;--supp-bg:#1a3020;--erp-bg:#28283a;--done:#50c080;--done-bg:#1a3020;--undone:#e87070;--undone-bg:#3a2020}
 body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
 .app{max-width:480px;margin:0 auto;min-height:100vh}
-
-/* ===== 상단 고정 헤더 + 탭 + 스와이프 ===== */
-.top-fixed{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:1px solid var(--border);transition:background .3s}
-.hd{padding:10px 16px 0}
-.hd-r{display:flex;justify-content:space-between;align-items:center;gap:6px}
-.hd-t{font-size:17px;font-weight:800}.hd-t em{font-style:normal;color:var(--accent)}
-.hd-s{font-size:11px;color:var(--muted);font-weight:500}
-.hd-a{display:flex;gap:6px}
+.top{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:1px solid var(--border);transition:background .3s}
+.hd{padding:10px 16px 0;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.ht{font-size:17px;font-weight:800}.ht em{font-style:normal;color:var(--accent)}
+.hs{font-size:11px;color:var(--muted);font-weight:500}
+.ha{display:flex;gap:6px}
 .hb{cursor:pointer;width:32px;height:32px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--card)}
-
-/* 탭 (상단, 스크롤 가능) */
 .tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0;padding:6px 6px 0}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex-shrink:0;padding:8px 12px;font-size:14px;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;transition:all .15s;white-space:nowrap}
 .tab.on{color:var(--accent);border-bottom-color:var(--accent)}
-.tab .tn{display:inline-block;font-size:11px;font-weight:700;background:var(--border);color:var(--sub);padding:1px 6px;border-radius:7px;margin-left:2px}
-.tab.on .tn{background:var(--accent);color:#fff}
-
-/* 스와이프 바 + 도트 (탭 아래) */
-.swipe-area{display:flex;flex-direction:column;align-items:center;padding:4px 0 6px}
+.tab .n{display:inline-block;font-size:11px;font-weight:700;background:var(--border);color:var(--sub);padding:1px 6px;border-radius:7px;margin-left:2px}
+.tab.on .n{background:var(--accent);color:#fff}
+.sa{display:flex;flex-direction:column;align-items:center;padding:4px 0 6px}
 .sz{width:100%;height:36px;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:pan-y;user-select:none;position:relative}
 .szb{width:72px;height:7px;border-radius:4px;background:var(--border);transition:background .15s}
 .sz.dg .szb{background:var(--accent)}
-.sa{position:absolute;top:50%;transform:translateY(-50%);color:var(--accent);font-size:20px;font-weight:700;opacity:0;transition:opacity .15s}.sa.l{left:24px}.sa.r{right:24px}
+.sar{position:absolute;top:50%;transform:translateY(-50%);color:var(--accent);font-size:20px;font-weight:700;opacity:0;transition:opacity .15s}.sar.l{left:24px}.sar.r{right:24px}
 .dots{display:flex;gap:4px;justify-content:center}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .2s}
 .dot.on{width:16px;border-radius:3px;background:var(--accent)}
-
-/* ===== 콘텐츠 영역 ===== */
 .ca{padding:6px 0 40px;transition:opacity .15s,transform .15s}
-.ca.ol{opacity:0;transform:translateX(-30px)}
-.ca.or{opacity:0;transform:translateX(30px)}
-
-/* 차수 선택 버튼 */
+.ca.ol{opacity:0;transform:translateX(-30px)}.ca.or{opacity:0;transform:translateX(30px)}
 .cr{display:flex;gap:6px;padding:6px 16px}
 .ct{flex:1;text-align:center;padding:10px 4px;border-radius:var(--r);font-size:15px;font-weight:800;cursor:pointer;background:var(--card);color:var(--muted);border:2px solid var(--border);transition:all .15s}
 .ct.on{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
-
-/* 건수 요약 (한 줄 한 박스) */
 .sb{display:flex;align-items:center;justify-content:center;gap:14px;margin:4px 16px;padding:8px 14px;background:var(--card);border-radius:var(--r);border:1px solid var(--border);font-size:13px;font-weight:600}
-.si{display:flex;align-items:center;gap:3px}
-.sn{font-weight:800;font-size:15px}
-
-/* 입력 전/후 섹션 */
+.si{display:flex;align-items:center;gap:3px}.sn{font-weight:800;font-size:15px}
 .ps{margin:6px 16px;border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
 .ph{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:14px;font-weight:700}
-.ph.bf{background:var(--before-bg);color:var(--before-c)}
-.ph.af{background:var(--after-bg);color:var(--after-c)}
+.ph.bf{background:var(--before-bg);color:var(--before-c)}.ph.af{background:var(--after-bg);color:var(--after-c)}
 .pc{font-size:11px;font-weight:600;opacity:.7}
 .pb{padding:6px 8px}
-
-/* 카테고리 라벨 */
 .cg{margin-bottom:4px}
 .cl{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;margin-bottom:2px}
-.cl.cancel{background:var(--cancel-bg);color:var(--cancel-c)}
-.cl.change{background:var(--change-bg);color:var(--change-c)}
-.cl.supplement{background:var(--supp-bg);color:var(--supp-c)}
-.cl.erp{background:var(--erp-bg);color:var(--erp-c)}
-
-/* 데이터 행 (한 줄 컴팩트) */
+.cl.cancel{background:var(--cancel-bg);color:var(--cancel-c)}.cl.change{background:var(--change-bg);color:var(--change-c)}.cl.supplement{background:var(--supp-bg);color:var(--supp-c)}.cl.erp{background:var(--erp-bg);color:var(--erp-c)}
 .ir{display:flex;align-items:center;gap:6px;padding:5px 10px;margin:2px 0;background:var(--card);border-radius:var(--rs);border:1px solid var(--border);font-size:13px;transition:background .3s}
-.in{font-weight:700;flex-shrink:0}
-.ig{font-size:10px;font-weight:700;background:var(--accent-light);color:var(--accent);padding:1px 5px;border-radius:4px;flex-shrink:0}
+.in{font-weight:700;flex-shrink:0}.ig{font-size:10px;font-weight:700;background:var(--accent-light);color:var(--accent);padding:1px 5px;border-radius:4px;flex-shrink:0}
 .id{color:var(--sub);font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .is{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;flex-shrink:0}
-.is.dn{background:var(--done-bg);color:var(--done)}
-.is.un{background:var(--undone-bg);color:var(--undone)}
-
+.is.dn{background:var(--done-bg);color:var(--done)}.is.un{background:var(--undone-bg);color:var(--undone)}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- ===== 상단 고정 영역 ===== -->
-  <div class="top-fixed">
+  <div class="top">
     <div class="hd">
-      <div class="hd-r">
-        <div class="hd-t"><em>수정보완건</em></div>
-        <div class="hd-s" id="hs"></div>
-        <div class="hd-a">
-          <div class="hb" onclick="toggleTheme()"><span id="ti">🌙</span></div>
-          <div class="hb" onclick="loadData()">↻</div>
-        </div>
-      </div>
+      <div class="ht"><em>수정보완건</em></div>
+      <div class="hs" id="hs"></div>
+      <div class="ha"><div class="hb" onclick="tog()"><span id="ti">🌙</span></div><div class="hb" onclick="load()">↻</div></div>
     </div>
-    <!-- 날짜+기관 탭 -->
     <div class="tabs" id="tabs"></div>
-    <!-- 스와이프 바 + 도트 -->
-    <div class="swipe-area">
-      <div class="sz" id="sz">
-        <span class="sa l" id="al">◂</span>
-        <div class="szb"></div>
-        <span class="sa r" id="ar">▸</span>
-      </div>
+    <div class="sa">
+      <div class="sz" id="sz"><span class="sar l" id="al">◂</span><div class="szb"></div><span class="sar r" id="ar">▸</span></div>
       <div class="dots" id="dots"></div>
     </div>
   </div>
-
-  <!-- ===== 로딩/에러 메시지 ===== -->
   <div id="msg"></div>
-
-  <!-- ===== 메인 콘텐츠 ===== -->
   <div class="ca" id="ca"></div>
 </div>
-
 <script>
-// ============================================================
-// 📌 Apps Script 배포 URL
-// ============================================================
-var API = 'https://script.google.com/macros/s/AKfycbzztlXhtV0kALZUZlkKLZpfXCjd5-35N6p-5m9gaL2BhzHFCIFk4ZbYEUI21yJqj2S7_Q/exec';
+var API='https://script.google.com/macros/s/AKfycbzztlXhtV0kALZUZlkKLZpfXCjd5-35N6p-5m9gaL2BhzHFCIFk4ZbYEUI21yJqj2S7_Q/exec';
+var S=[],ti=0,ci=[];
 
-// ============================================================
-// 전역 상태
-// ============================================================
-var SHEETS = [];   // 전체 시트 데이터 배열
-var tabIdx = 0;    // 현재 선택된 탭 인덱스
-var caseIdx = [];  // 각 탭별 선택된 차수 인덱스 (예: [0, 1, 0, ...])
+function tog(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'':'dark');document.getElementById('ti').textContent=d?'🌙':'☀️';try{localStorage.setItem('t',d?'l':'d')}catch(e){}}
+try{if(localStorage.getItem('t')==='d'){document.documentElement.setAttribute('data-theme','dark');window.addEventListener('DOMContentLoaded',function(){document.getElementById('ti').textContent='☀️'})}}catch(e){}
 
-// ============================================================
-// 테마 전환 (다크/라이트)
-// ============================================================
-function toggleTheme() {
-  var html = document.documentElement;
-  var isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? '' : 'dark');
-  document.getElementById('ti').textContent = isDark ? '🌙' : '☀️';
-  try { localStorage.setItem('theme', isDark ? 'light' : 'dark'); } catch(e) {}
-}
-// 저장된 테마 복원
-try {
-  if (localStorage.getItem('theme') === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    window.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('ti').textContent = '☀️';
-    });
-  }
-} catch(e) {}
+function pn(raw){if(!raw)return{n:'',g:0};var s=String(raw).trim(),m=s.match(/^(\d+)(.+)$/);return m?{n:m[2],g:parseInt(m[1])}:{n:s,g:0}}
 
-// ============================================================
-// 이름 파싱: "1홍옥수" → {name:"홍옥수", goza:1}
-// 이름 앞 숫자가 구좌 수
-// ============================================================
-function parseName(raw) {
-  if (!raw) return { name: '', goza: 0 };
-  var s = String(raw).trim();
-  var m = s.match(/^(\d+)(.+)$/);
-  return m ? { name: m[2], goza: parseInt(m[1]) } : { name: s, goza: 0 };
+async function load(){
+  var m=document.getElementById('msg');
+  m.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--muted)"><div style="width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px"></div><span style="font-size:13px">불러오는 중...</span></div>';
+  try{
+    var r=await fetch(API);var d=await r.json();
+    if(!d||!d.length){m.innerHTML='<div style="text-align:center;padding:60px;color:var(--muted)">데이터 없음</div>';return}
+    // ★ 탭 순서: Apps Script가 시트 탭 순서대로 보내주므로 정렬하지 않음
+    S=d;
+    ti=0;ci=S.map(function(){return 0});
+    if(S.length)document.getElementById('hs').textContent=S[0].date+' · '+S[0].org;
+    m.innerHTML='';ren();
+  }catch(e){m.innerHTML='<div style="text-align:center;padding:60px;color:var(--cancel-c)"><span style="font-size:13px">불러오기 실패</span><br><br><button onclick="load()" style="padding:8px 20px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;cursor:pointer">다시 시도</button></div>'}
 }
 
-// ============================================================
-// 시트 필터: 표시할 탭인지 판단
-// 날짜 패턴이 없거나, 제외 키워드가 포함된 탭은 false
-// ============================================================
-function shouldShow(tab, date) {
-  if (!date || date.indexOf('/') < 0) return false;
-  var month = parseInt(date.split('/')[0]);
-  if (month < 1 || month > 12) return false;
-  // 제외 키워드 (숨긴 시트 이름에 포함된 키워드들)
-  var exclude = ['강연', '회의', '메모', '목록', '설정', '나바순', '이세준', '김종서'];
-  for (var i = 0; i < exclude.length; i++) {
-    if (tab.indexOf(exclude[i]) > -1) return false;
-  }
-  return true;
+function cnt(s){var n=0;s.cases.forEach(function(c){['before','after'].forEach(function(p){['cancel','change','supplement','erp'].forEach(function(k){n+=c[p][k].length})})});return n}
+function cntp(c,p){var n=0;['cancel','change','supplement','erp'].forEach(function(k){n+=c[p][k].length});return n}
+
+function ren(){
+  if(!S.length)return;
+  document.getElementById('tabs').innerHTML=S.map(function(s,i){return'<div class="tab '+(i===ti?'on':'')+'" onclick="go('+i+')">'+s.date+' '+s.org+'<span class="n">'+cnt(s)+'</span></div>'}).join('');
+  setTimeout(function(){var a=document.querySelector('.tab.on');if(a)a.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})},80);
+  document.getElementById('dots').innerHTML=S.map(function(_,i){return'<div class="dot '+(i===ti?'on':'')+'"></div>'}).join('');
+  rc();
 }
 
-// ============================================================
-// 데이터 불러오기
-// ============================================================
-async function loadData() {
-  var msg = document.getElementById('msg');
-  msg.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--muted)">' +
-    '<div style="width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);' +
-    'border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px"></div>' +
-    '<span style="font-size:13px">불러오는 중...</span></div>';
+function rc(){
+  var sh=S[ti],c=ci[ti],cas=sh.cases[c];
+  var ac={cancel:0,change:0,supplement:0,erp:0};
+  ['before','after'].forEach(function(p){['cancel','change','supplement','erp'].forEach(function(k){ac[k]+=cas[p][k].length})});
 
-  try {
-    var res = await fetch(API);
-    var data = await res.json();
+  var ch='';
+  if(sh.cases.length>1)ch='<div class="cr">'+sh.cases.map(function(x,j){return'<div class="ct '+(j===c?'on':'')+'" onclick="pc('+j+')">'+x.no+'차</div>'}).join('')+'</div>';
 
-    if (!data || !data.length) {
-      msg.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted)">데이터 없음</div>';
-      return;
-    }
+  var sm='<div class="sb"><div class="si"><span class="sn" style="color:var(--cancel-c)">'+ac.cancel+'</span><span style="color:var(--muted)">취소</span></div><div class="si"><span class="sn" style="color:var(--change-c)">'+ac.change+'</span><span style="color:var(--muted)">변경</span></div><div class="si"><span class="sn" style="color:var(--supp-c)">'+ac.supplement+'</span><span style="color:var(--muted)">보완</span></div><div class="si"><span class="sn" style="color:var(--erp-c)">'+ac.erp+'</span><span style="color:var(--muted)">오등록</span></div></div>';
 
-    // 필터링: 숨긴 탭, 제외 키워드 제거
-    SHEETS = data.filter(function(s) { return shouldShow(s.tab, s.date); });
-
-    // 정렬: 최신 날짜가 먼저 (왼쪽)
-    SHEETS.sort(function(a, b) {
-      var ap = a.date.split('/'), bp = b.date.split('/');
-      return (parseInt(bp[0]) * 100 + parseInt(bp[1])) - (parseInt(ap[0]) * 100 + parseInt(ap[1]));
-    });
-
-    // 초기 상태 설정
-    tabIdx = 0;
-    caseIdx = SHEETS.map(function() { return 0; }); // 모든 탭 1차부터 시작
-
-    if (SHEETS.length) {
-      document.getElementById('hs').textContent = SHEETS[0].date + ' 기준';
-    }
-    msg.innerHTML = '';
-    renderAll();
-  } catch(err) {
-    msg.innerHTML = '<div style="text-align:center;padding:60px;color:var(--cancel-c)">' +
-      '<span style="font-size:13px">불러오기 실패</span><br><br>' +
-      '<button onclick="loadData()" style="padding:8px 20px;border-radius:8px;border:1px solid var(--border);' +
-      'background:var(--card);color:var(--text);font-size:13px;cursor:pointer">다시 시도</button></div>';
-  }
+  var bt=cntp(cas,'before'),at=cntp(cas,'after');
+  document.getElementById('ca').innerHTML=ch+sm+bp(cas.before,'bf',bt,'입력 전')+bp(cas.after,'af',at,'입력 후');
 }
 
-// ============================================================
-// 건수 계산
-// ============================================================
-// 시트 전체 건수 (모든 차수 합산)
-function countSheet(s) {
-  var n = 0;
-  s.cases.forEach(function(c) {
-    ['before', 'after'].forEach(function(p) {
-      ['cancel', 'change', 'supplement', 'erp'].forEach(function(k) {
-        n += c[p][k].length;
-      });
-    });
-  });
-  return n;
+function bp(ph,cls,tot,lbl){
+  if(tot===0)return'';
+  var b='';
+  b+=bc('취소','cancel',ph.cancel);b+=bc('변경/추가','change',ph.change);
+  b+=bc('보완','supplement',ph.supplement);b+=bc('오등록','erp',ph.erp);
+  if(!b)return'';
+  return'<div class="ps"><div class="ph '+cls+'"><span>'+lbl+'</span><span class="pc">'+tot+'건</span></div><div class="pb">'+b+'</div></div>';
 }
 
-// 특정 차수의 특정 phase(before/after) 건수
-function countPhase(cas, phase) {
-  var n = 0;
-  ['cancel', 'change', 'supplement', 'erp'].forEach(function(k) {
-    n += cas[phase][k].length;
-  });
-  return n;
-}
-
-// ============================================================
-// 렌더링: 전체 (탭 + 도트 + 콘텐츠)
-// ============================================================
-function renderAll() {
-  if (!SHEETS.length) return;
-
-  // --- 탭 렌더링 ---
-  document.getElementById('tabs').innerHTML = SHEETS.map(function(s, i) {
-    return '<div class="tab ' + (i === tabIdx ? 'on' : '') +
-      '" onclick="goTab(' + i + ')">' + s.date + ' ' + s.org +
-      '<span class="tn">' + countSheet(s) + '</span></div>';
+function bc(lbl,type,items){
+  if(!items||!items.length)return'';
+  var rows=items.map(function(it){
+    var p=pn(it.name);
+    var nm=p.n?'<span class="in">'+p.n+'</span>':'<span class="in" style="color:var(--muted)">미입력</span>';
+    var gz=p.g?'<span class="ig">'+p.g+'구좌</span>':'';
+    if(type==='cancel'||type==='change')return'<div class="ir">'+nm+gz+'</div>';
+    if(type==='supplement'){var dn=it.done||(it.result&&it.result.indexOf('완료')>-1);var st=dn?'<span class="is dn">등록완료</span>':'<span class="is un">미완료</span>';var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt+st+'</div>'}
+    if(type==='erp'){var dt2=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt2+'</div>'}
+    return'';
   }).join('');
-
-  // 활성 탭을 화면 중앙으로 스크롤
-  setTimeout(function() {
-    var active = document.querySelector('.tab.on');
-    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  }, 80);
-
-  // --- 도트 렌더링 ---
-  document.getElementById('dots').innerHTML = SHEETS.map(function(_, i) {
-    return '<div class="dot ' + (i === tabIdx ? 'on' : '') + '"></div>';
-  }).join('');
-
-  // --- 콘텐츠 렌더링 ---
-  renderContent();
+  return'<div class="cg"><div class="cl '+type+'">'+lbl+' '+items.length+'</div>'+rows+'</div>';
 }
 
-// ============================================================
-// 렌더링: 콘텐츠 (차수 선택 + 요약 + 입력전/후)
-// ============================================================
-function renderContent() {
-  var sheet = SHEETS[tabIdx];           // 현재 탭의 시트 데이터
-  var ci = caseIdx[tabIdx];             // 현재 탭에서 선택된 차수 인덱스
-  var cas = sheet.cases[ci];            // 선택된 차수 데이터
+function go(i){if(i<0||i>=S.length||i===ti)return;var el=document.getElementById('ca'),dir=i>ti?'ol':'or';el.classList.add(dir);setTimeout(function(){ti=i;document.getElementById('hs').textContent=S[i].date+' · '+S[i].org;ren();el.classList.remove(dir);window.scrollTo({top:0,behavior:'smooth'})},150)}
+function pc(i){ci[ti]=i;rc()}
 
-  // 전체 건수 (입력전+후 합산)
-  var allCats = { cancel: 0, change: 0, supplement: 0, erp: 0 };
-  ['before', 'after'].forEach(function(p) {
-    ['cancel', 'change', 'supplement', 'erp'].forEach(function(k) {
-      allCats[k] += cas[p][k].length;
-    });
-  });
+var sx=0,cx=0,dr=false,TH=50,z=document.getElementById('sz');
+z.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;cx=sx;dr=true;z.classList.add('dg')},{passive:true});
+z.addEventListener('touchmove',function(e){if(!dr)return;cx=e.touches[0].clientX;var d=cx-sx;document.getElementById('al').style.opacity=d>20?'1':'0';document.getElementById('ar').style.opacity=d<-20?'1':'0'},{passive:true});
+z.addEventListener('touchend',function(){if(!dr)return;dr=false;z.classList.remove('dg');var d=cx-sx;if(d<-TH&&ti<S.length-1)go(ti+1);else if(d>TH&&ti>0)go(ti-1);document.getElementById('al').style.opacity='0';document.getElementById('ar').style.opacity='0';sx=0;cx=0});
+var md=false,ms=0,mc=0;
+z.addEventListener('mousedown',function(e){md=true;ms=e.clientX;mc=ms;z.classList.add('dg')});
+z.addEventListener('mousemove',function(e){if(!md)return;mc=e.clientX;var d=mc-ms;document.getElementById('al').style.opacity=d>20?'1':'0';document.getElementById('ar').style.opacity=d<-20?'1':'0'});
+z.addEventListener('mouseup',function(){if(!md)return;md=false;z.classList.remove('dg');var d=mc-ms;if(d<-TH&&ti<S.length-1)go(ti+1);else if(d>TH&&ti>0)go(ti-1);document.getElementById('al').style.opacity='0';document.getElementById('ar').style.opacity='0'});
+z.addEventListener('mouseleave',function(){if(md){md=false;z.classList.remove('dg');document.getElementById('al').style.opacity='0';document.getElementById('ar').style.opacity='0'}});
 
-  // --- 차수 선택 버튼 (2개 이상일 때만 표시) ---
-  var caseHtml = '';
-  if (sheet.cases.length > 1) {
-    caseHtml = '<div class="cr">' + sheet.cases.map(function(c, j) {
-      return '<div class="ct ' + (j === ci ? 'on' : '') +
-        '" onclick="pickCase(' + j + ')">' + c.no + '차</div>';
-    }).join('') + '</div>';
-  }
-
-  // --- 건수 요약 (한 줄) ---
-  var sumHtml = '<div class="sb">' +
-    '<div class="si"><span class="sn" style="color:var(--cancel-c)">' + allCats.cancel + '</span><span style="color:var(--muted)">취소</span></div>' +
-    '<div class="si"><span class="sn" style="color:var(--change-c)">' + allCats.change + '</span><span style="color:var(--muted)">변경</span></div>' +
-    '<div class="si"><span class="sn" style="color:var(--supp-c)">' + allCats.supplement + '</span><span style="color:var(--muted)">보완</span></div>' +
-    '<div class="si"><span class="sn" style="color:var(--erp-c)">' + allCats.erp + '</span><span style="color:var(--muted)">오등록</span></div>' +
-    '</div>';
-
-  // --- 입력 전/후 블록 (건수 0이면 숨김) ---
-  var beforeTotal = countPhase(cas, 'before');
-  var afterTotal = countPhase(cas, 'after');
-  var beforeHtml = buildPhase(cas.before, 'bf', beforeTotal, '입력 전');
-  var afterHtml = buildPhase(cas.after, 'af', afterTotal, '입력 후');
-
-  document.getElementById('ca').innerHTML = caseHtml + sumHtml + beforeHtml + afterHtml;
-}
-
-// ============================================================
-// 입력 전/후 블록 생성
-// phase: cas.before 또는 cas.after
-// cls: 'bf' 또는 'af' (CSS 클래스)
-// total: 총 건수
-// label: "입력 전" 또는 "입력 후"
-// ============================================================
-function buildPhase(phase, cls, total, label) {
-  if (total === 0) return ''; // 건수 0이면 아예 숨김
-
-  var body = '';
-  body += buildCategory('취소', 'cancel', phase.cancel);
-  body += buildCategory('변경/추가', 'change', phase.change);
-  body += buildCategory('보완', 'supplement', phase.supplement);
-  body += buildCategory('오등록', 'erp', phase.erp);
-
-  if (!body) return '';
-
-  return '<div class="ps">' +
-    '<div class="ph ' + cls + '"><span>' + label + '</span><span class="pc">' + total + '건</span></div>' +
-    '<div class="pb">' + body + '</div>' +
-    '</div>';
-}
-
-// ============================================================
-// 카테고리별 데이터 행 생성
-// 취소/변경: 이름 + 구좌수만 (한 줄)
-// 보완: 이름 + 구좌수 + 내용 + 등록완료/미완료
-// 오등록: 이름 + 구좌수 + 내용
-// ============================================================
-function buildCategory(label, type, items) {
-  if (!items || !items.length) return ''; // 건수 0이면 숨김
-
-  var rows = items.map(function(item) {
-    var p = parseName(item.name);
-    var nameHtml = p.name
-      ? '<span class="in">' + p.name + '</span>'
-      : '<span class="in" style="color:var(--muted)">미입력</span>';
-    var gozaHtml = p.goza
-      ? '<span class="ig">' + p.goza + '구좌</span>'
-      : '';
-
-    // 취소, 변경/추가: 이름 + 구좌수만
-    if (type === 'cancel' || type === 'change') {
-      return '<div class="ir">' + nameHtml + gozaHtml + '</div>';
-    }
-
-    // 보완: 이름 + 구좌수 + 내용 + 완료 상태
-    if (type === 'supplement') {
-      var isDone = item.done || (item.result && item.result.indexOf('완료') > -1);
-      var statusHtml = isDone
-        ? '<span class="is dn">등록완료</span>'
-        : '<span class="is un">미완료</span>';
-      var detailHtml = item.detail
-        ? '<span class="id">' + item.detail + '</span>'
-        : '';
-      return '<div class="ir">' + nameHtml + gozaHtml + detailHtml + statusHtml + '</div>';
-    }
-
-    // 오등록: 이름 + 구좌수 + 내용
-    if (type === 'erp') {
-      var detailHtml2 = item.detail
-        ? '<span class="id">' + item.detail + '</span>'
-        : '';
-      return '<div class="ir">' + nameHtml + gozaHtml + detailHtml2 + '</div>';
-    }
-
-    return '';
-  }).join('');
-
-  return '<div class="cg">' +
-    '<div class="cl ' + type + '">' + label + ' ' + items.length + '</div>' +
-    rows + '</div>';
-}
-
-// ============================================================
-// 탭 전환 (애니메이션 포함)
-// ============================================================
-function goTab(i) {
-  if (i < 0 || i >= SHEETS.length || i === tabIdx) return;
-
-  var el = document.getElementById('ca');
-  var direction = i > tabIdx ? 'ol' : 'or'; // 왼쪽/오른쪽 슬라이드
-  el.classList.add(direction);
-
-  setTimeout(function() {
-    tabIdx = i;
-    document.getElementById('hs').textContent = SHEETS[i].date + ' 기준';
-    renderAll();
-    el.classList.remove(direction);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 150);
-}
-
-// ============================================================
-// 차수 전환 (1차 ↔ 2차)
-// ============================================================
-function pickCase(ci) {
-  caseIdx[tabIdx] = ci; // 현재 탭의 차수만 변경
-  renderContent();       // 콘텐츠만 다시 렌더링 (탭은 유지)
-}
-
-// ============================================================
-// 스와이프 (제스처 바에서만 작동)
-// ============================================================
-var startX = 0, currentX = 0, isDragging = false;
-var THRESHOLD = 50;
-var zone = document.getElementById('sz');
-
-// 터치 이벤트
-zone.addEventListener('touchstart', function(e) {
-  startX = e.touches[0].clientX;
-  currentX = startX;
-  isDragging = true;
-  zone.classList.add('dg');
-}, { passive: true });
-
-zone.addEventListener('touchmove', function(e) {
-  if (!isDragging) return;
-  currentX = e.touches[0].clientX;
-  var diff = currentX - startX;
-  document.getElementById('al').style.opacity = diff > 20 ? '1' : '0';
-  document.getElementById('ar').style.opacity = diff < -20 ? '1' : '0';
-}, { passive: true });
-
-zone.addEventListener('touchend', function() {
-  if (!isDragging) return;
-  isDragging = false;
-  zone.classList.remove('dg');
-  var diff = currentX - startX;
-  if (diff < -THRESHOLD && tabIdx < SHEETS.length - 1) goTab(tabIdx + 1);
-  else if (diff > THRESHOLD && tabIdx > 0) goTab(tabIdx - 1);
-  document.getElementById('al').style.opacity = '0';
-  document.getElementById('ar').style.opacity = '0';
-  startX = 0;
-  currentX = 0;
-});
-
-// 마우스 이벤트 (PC에서도 사용 가능)
-var mouseDown = false, mouseStartX = 0, mouseCurrentX = 0;
-zone.addEventListener('mousedown', function(e) {
-  mouseDown = true; mouseStartX = e.clientX; mouseCurrentX = mouseStartX;
-  zone.classList.add('dg');
-});
-zone.addEventListener('mousemove', function(e) {
-  if (!mouseDown) return;
-  mouseCurrentX = e.clientX;
-  var d = mouseCurrentX - mouseStartX;
-  document.getElementById('al').style.opacity = d > 20 ? '1' : '0';
-  document.getElementById('ar').style.opacity = d < -20 ? '1' : '0';
-});
-zone.addEventListener('mouseup', function() {
-  if (!mouseDown) return;
-  mouseDown = false; zone.classList.remove('dg');
-  var d = mouseCurrentX - mouseStartX;
-  if (d < -THRESHOLD && tabIdx < SHEETS.length - 1) goTab(tabIdx + 1);
-  else if (d > THRESHOLD && tabIdx > 0) goTab(tabIdx - 1);
-  document.getElementById('al').style.opacity = '0';
-  document.getElementById('ar').style.opacity = '0';
-});
-zone.addEventListener('mouseleave', function() {
-  if (mouseDown) {
-    mouseDown = false; zone.classList.remove('dg');
-    document.getElementById('al').style.opacity = '0';
-    document.getElementById('ar').style.opacity = '0';
-  }
-});
-
-// ============================================================
-// 시작!
-// ============================================================
-loadData();
+load();
 </script>
 </body>
 </html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>수정보완건 뷰어</title>
+<link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#f4f3f0;--card:#ffffff;--text:#1a1a1a;--sub:#555;--muted:#999;
+--border:#e5e3de;--border-light:#f0eeea;
+--accent:#2b5592;--accent-light:#eaf1fb;--accent-dark:#1d3d6b;
+--before:#7c6bb5;--before-light:#f0edfa;
+--after:#2e8b6a;--after-light:#e8f6f0;
+--cancel-c:#c74444;--cancel-bg:#fce8e8;
+--change-c:#b87a1a;--change-bg:#fef4de;
+--supplement-c:#1e8858;--supplement-bg:#e5f5ed;
+--erp-c:#6060b0;--erp-bg:#eeeef8;
+--done:#1e8858;--done-bg:#e5f5ed;
+--undone:#c74444;--undone-bg:#fce8e8;
+--r:14px;--rs:10px;
+}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+.app{max-width:480px;margin:0 auto;min-height:100vh;overflow-x:hidden}
+
+.header{background:var(--card);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.header-inner{padding:18px 20px 0}
+.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.h-title{font-size:19px;font-weight:800;letter-spacing:-0.5px}
+.h-title em{font-style:normal;color:var(--accent)}
+.h-sub{font-size:12px;color:var(--muted);font-weight:500}
+
+.tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0;padding:0 16px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+flex-shrink:0;padding:9px 16px 11px;
+font-size:13px;font-weight:600;color:var(--muted);
+border-bottom:2.5px solid transparent;
+cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab .cnt{
+display:inline-block;font-size:10px;font-weight:700;
+background:var(--border);color:var(--sub);
+padding:1px 6px;border-radius:7px;margin-left:3px;vertical-align:1px;
+}
+.tab.active .cnt{background:var(--accent);color:#fff}
+
+.swipe-container{position:relative;overflow:hidden;touch-action:pan-y}
+.swipe-track{display:flex;transition:transform .3s cubic-bezier(.4,0,.2,1);will-change:transform}
+.swipe-track.dragging{transition:none}
+.swipe-page{flex-shrink:0;width:100%}
+
+.swipe-hint{
+display:flex;align-items:center;justify-content:center;gap:6px;
+padding:10px 16px 2px;font-size:11px;color:var(--muted);
+}
+.swipe-hint svg{width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:2}
+.swipe-dots{display:flex;gap:5px;justify-content:center;padding:6px 0 2px}
+.swipe-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .2s}
+.swipe-dot.active{width:18px;border-radius:3px;background:var(--accent)}
+
+.phase-toggle{
+display:flex;gap:0;margin:10px 16px 0;
+background:var(--bg);border-radius:10px;padding:3px;
+}
+.phase-btn{
+flex:1;text-align:center;padding:7px 0;
+font-size:12px;font-weight:700;border-radius:8px;
+cursor:pointer;transition:all .2s;color:var(--muted);
+}
+.phase-btn.active-before{background:var(--before-light);color:var(--before);box-shadow:0 1px 3px rgba(124,107,181,.15)}
+.phase-btn.active-after{background:var(--after-light);color:var(--after);box-shadow:0 1px 3px rgba(46,139,106,.15)}
+
+.body{padding:10px 16px 80px}
+
+.section{margin-bottom:6px}
+.section-head{display:flex;align-items:center;gap:8px;padding:14px 0 8px}
+.section-icon{
+width:28px;height:28px;border-radius:8px;
+display:flex;align-items:center;justify-content:center;
+font-size:13px;font-weight:800;
+}
+.section-icon.cancel{background:var(--cancel-bg);color:var(--cancel-c)}
+.section-icon.change{background:var(--change-bg);color:var(--change-c)}
+.section-icon.supplement{background:var(--supplement-bg);color:var(--supplement-c)}
+.section-icon.erp{background:var(--erp-bg);color:var(--erp-c)}
+.section-label{font-size:14px;font-weight:700;letter-spacing:-0.3px}
+.section-count{font-size:11px;color:var(--muted);font-weight:500}
+
+.card{
+background:var(--card);border-radius:var(--r);
+border:1px solid var(--border);
+margin-bottom:6px;overflow:hidden;
+animation:fadeUp .25s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card:nth-child(2){animation-delay:.02s}
+.card:nth-child(3){animation-delay:.04s}
+
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 0}
+.card-name{font-size:15px;font-weight:700;letter-spacing:-0.2px}
+.card-name.empty{color:var(--muted);font-weight:400;font-style:italic;font-size:13px}
+.card-no{font-size:11px;color:var(--muted);font-weight:500}
+
+.card-body{padding:6px 14px 12px}
+.detail-row{display:flex;align-items:flex-start;gap:8px;padding:4px 0;font-size:13px}
+.detail-label{flex-shrink:0;width:48px;color:var(--muted);font-weight:600;font-size:11px;padding-top:1px}
+.detail-value{color:var(--sub);line-height:1.45;word-break:keep-all}
+.detail-value.highlight{color:var(--text);font-weight:600}
+
+.status-pill{
+display:inline-flex;align-items:center;gap:4px;
+font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;
+}
+.status-pill.done{background:var(--done-bg);color:var(--done)}
+.status-pill.undone{background:var(--undone-bg);color:var(--undone)}
+.status-pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+.change-detail{
+background:var(--bg);border-radius:var(--rs);
+padding:8px 12px;margin-top:4px;
+font-size:12px;line-height:1.5;color:var(--sub);
+}
+.change-detail .cd-row{display:flex;justify-content:space-between;padding:2px 0}
+.change-detail .cd-label{color:var(--muted);font-weight:600}
+.change-detail .cd-val{font-weight:600;color:var(--text)}
+.change-detail .cd-val.add{color:var(--after)}
+.change-detail .cd-val.remove{color:var(--cancel-c)}
+
+.empty-section{
+text-align:center;padding:16px;
+font-size:13px;color:var(--muted);
+background:var(--card);border-radius:var(--r);
+border:1px dashed var(--border);
+}
+
+.summary-strip{display:flex;gap:4px;padding:10px 16px 2px}
+.ss-item{
+flex:1;background:var(--card);border-radius:var(--rs);
+padding:10px 6px;text-align:center;border:1px solid var(--border);
+}
+.ss-num{font-size:18px;font-weight:800;letter-spacing:-0.5px}
+.ss-label{font-size:9px;font-weight:600;color:var(--muted);margin-top:1px;letter-spacing:0.3px}
+
+.case-selector{display:flex;gap:4px;padding:10px 16px 0}
+.case-btn{
+flex:1;text-align:center;padding:8px;border-radius:var(--rs);
+font-size:12px;font-weight:600;cursor:pointer;
+background:var(--card);color:var(--muted);border:1px solid var(--border);
+transition:all .15s;
+}
+.case-btn.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-row">
+        <div class="h-title"><em>수정보완건</em> 뷰어</div>
+        <div class="h-sub" id="hSub"></div>
+        <div onclick="loadData()" style="cursor:pointer;padding:4px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--accent);">↻ 새로고침</div>
+      </div>
+    </div>
+    <div class="tabs" id="mainTabs"></div>
+  </div>
+
+  <div class="swipe-hint" id="swipeHint">
+    <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+    <span>좌우로 스와이프하여 탭 전환</span>
+    <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+  </div>
+  <div class="swipe-dots" id="swipeDots"></div>
+
+  <div class="swipe-container" id="swipeContainer">
+    <div class="swipe-track" id="swipeTrack"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 📌 여기에 Apps Script 배포 URL을 붙여넣으세요
+// ============================================================
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+let SHEETS = [];
+let activeIdx = 0;
+let caseIdxMap = [];
+let phaseMap = [];
+
+async function loadData() {
+  const app = document.getElementById('app');
+  
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    document.getElementById('swipeHint').innerHTML = `
+      <div style="text-align:center;padding:40px 20px;color:var(--muted);line-height:1.8;font-size:13px;">
+        <div style="font-size:32px;margin-bottom:12px;opacity:0.4;">⚙️</div>
+        <b style="color:var(--text);font-size:14px;">설정이 필요합니다</b><br><br>
+        1. 구글 시트 → 확장 프로그램 → Apps Script<br>
+        2. Apps_Script_코드.js 내용 붙여넣기<br>
+        3. 배포 → 새 배포 → 웹 앱<br>
+        4. 배포 URL을 이 파일 상단의<br>
+        <code style="background:var(--border);padding:2px 8px;border-radius:4px;font-size:12px;">APPS_SCRIPT_URL</code>에 붙여넣기
+      </div>`;
+    document.getElementById('swipeDots').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('swipeHint').innerHTML = `
+    <div style="text-align:center;padding:40px 20px;color:var(--muted);">
+      <div style="width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;"></div>
+      <span style="font-size:13px;">시트 데이터 불러오는 중...</span>
+    </div>`;
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL);
+    const data = await res.json();
+    
+    if (!data || data.length === 0) {
+      document.getElementById('swipeHint').innerHTML = `
+        <div style="text-align:center;padding:40px 20px;color:var(--muted);">
+          <div style="font-size:32px;margin-bottom:12px;opacity:0.4;">📭</div>
+          <span style="font-size:13px;">데이터가 없습니다. 시트를 확인해주세요.</span>
+        </div>`;
+      return;
+    }
+
+    SHEETS = data;
+    activeIdx = 0;
+    caseIdxMap = SHEETS.map(() => 0);
+    phaseMap = SHEETS.map(() => 'before');
+
+    document.getElementById('hSub').textContent = SHEETS[0].date + ' 기준';
+    document.getElementById('swipeHint').innerHTML = `
+      <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+      <span>좌우로 스와이프하여 탭 전환</span>
+      <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>`;
+    
+    renderTabs();
+    renderDots();
+    renderAllPages();
+    updateTrackPos(true);
+  } catch(err) {
+    document.getElementById('swipeHint').innerHTML = `
+      <div style="text-align:center;padding:40px 20px;color:var(--cancel-c);">
+        <div style="font-size:32px;margin-bottom:12px;opacity:0.6;">⚠️</div>
+        <span style="font-size:13px;line-height:1.6;">데이터를 불러올 수 없습니다.<br>URL과 배포 설정을 확인해주세요.</span>
+        <br><br>
+        <button onclick="loadData()" style="padding:8px 20px;border-radius:8px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600;cursor:pointer;">다시 시도</button>
+      </div>`;
+  }
+}
+
+let startX = 0, currentX = 0, isDragging = false;
+const THRESHOLD = 50;
+
+function countItems(sheet) {
+  let n=0;
+  sheet.cases.forEach(c=>{['before','after'].forEach(p=>{['cancel','change','supplement','erp'].forEach(k=>{n+=c[p][k].length})})});
+  return n;
+}
+function countPhase(cas,phase){let n=0;['cancel','change','supplement','erp'].forEach(k=>{n+=cas[phase][k].length});return n}
+
+function renderTabs(){
+  document.getElementById('mainTabs').innerHTML = SHEETS.map((s,i)=>
+    `<div class="tab ${i===activeIdx?'active':''}" onclick="goTo(${i})">${s.date} ${s.org}<span class="cnt">${countItems(s)}</span></div>`
+  ).join('');
+  setTimeout(()=>{
+    const a=document.querySelector('#mainTabs .tab.active');
+    if(a) a.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  },80);
+}
+
+function renderDots(){
+  document.getElementById('swipeDots').innerHTML = SHEETS.map((_,i)=>
+    `<div class="swipe-dot ${i===activeIdx?'active':''}"></div>`
+  ).join('');
+}
+
+function renderAllPages(){
+  const track = document.getElementById('swipeTrack');
+  track.innerHTML = SHEETS.map((sheet,si)=>{
+    const ci = caseIdxMap[si];
+    const ph = phaseMap[si];
+    const cas = sheet.cases[ci];
+    const phase = cas[ph];
+    const bCnt = countPhase(cas,'before');
+    const aCnt = countPhase(cas,'after');
+
+    let caseSel = '';
+    if(sheet.cases.length > 1){
+      caseSel = `<div class="case-selector">${sheet.cases.map((c,j)=>
+        `<div class="case-btn ${j===ci?'active':''}" onclick="setCase(${si},${j})">${c.no}건 <span style="font-size:10px;font-weight:400">${c.title}</span></div>`
+      ).join('')}</div>`;
+    } else {
+      caseSel = `<div style="padding:10px 16px 0"><div style="font-size:12px;color:var(--muted);background:var(--card);padding:8px 12px;border-radius:var(--rs);border:1px solid var(--border)"><span style="font-weight:700;color:var(--sub)">${cas.no}건</span><span style="margin-left:6px">${cas.title}</span></div></div>`;
+    }
+
+    return `<div class="swipe-page">
+      ${caseSel}
+      <div class="phase-toggle" style="margin:10px 16px 0">
+        <div class="phase-btn ${ph==='before'?'active-before':''}" onclick="setPhase(${si},'before')">입력 전 <span style="font-size:10px;opacity:.7">(${bCnt})</span></div>
+        <div class="phase-btn ${ph==='after'?'active-after':''}" onclick="setPhase(${si},'after')">입력 후 <span style="font-size:10px;opacity:.7">(${aCnt})</span></div>
+      </div>
+      <div class="summary-strip">
+        <div class="ss-item"><div class="ss-num" style="color:var(--cancel-c)">${phase.cancel.length}</div><div class="ss-label">취소</div></div>
+        <div class="ss-item"><div class="ss-num" style="color:var(--change-c)">${phase.change.length}</div><div class="ss-label">변경/추가</div></div>
+        <div class="ss-item"><div class="ss-num" style="color:var(--supplement-c)">${phase.supplement.length}</div><div class="ss-label">보완</div></div>
+        <div class="ss-item"><div class="ss-num" style="color:var(--erp-c)">${phase.erp.length}</div><div class="ss-label">오등록</div></div>
+      </div>
+      <div class="body">
+        ${renderSection('취소','cancel',phase.cancel)}
+        ${renderSection('변경/추가','change',phase.change)}
+        ${renderSection('보완','supplement',phase.supplement)}
+        ${renderSection('오등록(ERP)','erp',phase.erp)}
+      </div>
+    </div>`;
+  }).join('');
+
+  updateTrackPos(false);
+}
+
+function renderSection(label,type,items){
+  const icon={cancel:'✕',change:'↔',supplement:'✓',erp:'!'}[type];
+  return `<div class="section">
+    <div class="section-head">
+      <div class="section-icon ${type}">${icon}</div>
+      <div class="section-label">${label}</div>
+      <div class="section-count">${items.length}건</div>
+    </div>
+    ${items.length===0
+      ?'<div class="empty-section">해당 건 없음</div>'
+      :items.map((item,i)=>renderCard(type,item,i)).join('')}
+  </div>`;
+}
+
+function renderCard(type,item,idx){
+  if(type==='cancel') return `<div class="card"><div class="card-header"><div class="card-name">${item.name||'<span class="empty">미입력</span>'}</div><div class="card-no">#${idx+1}</div></div><div class="card-body"><div class="detail-row"><div class="detail-label">사유</div><div class="detail-value highlight">${item.detail||'-'}</div></div><div class="detail-row"><div class="detail-label">결과</div><div class="detail-value">${item.result||'<span style="color:var(--muted)">미처리</span>'}</div></div></div></div>`;
+
+  if(type==='change'){
+    let ch='';
+    if(item.changeType==='구좌수변경') ch=`<div class="change-detail"><div class="cd-row"><div class="cd-label">변경유형</div><div class="cd-val">구좌수 변경</div></div><div class="cd-row"><div class="cd-label">변경 전</div><div class="cd-val remove">${item.from}</div></div><div class="cd-row"><div class="cd-label">변경 후</div><div class="cd-val add">${item.to}</div></div></div>`;
+    else if(item.changeType==='추가') ch=`<div class="change-detail"><div class="cd-row"><div class="cd-label">유형</div><div class="cd-val add">구좌 추가</div></div><div class="cd-row"><div class="cd-label">추가</div><div class="cd-val add">+${item.addCount}</div></div></div>`;
+    return `<div class="card"><div class="card-header"><div class="card-name">${item.name||'<span class="empty">미입력</span>'}</div><div class="card-no">#${idx+1}</div></div><div class="card-body"><div class="detail-row"><div class="detail-label">내용</div><div class="detail-value highlight">${item.detail||'-'}</div></div><div class="detail-row"><div class="detail-label">결과</div><div class="detail-value">${item.result||'<span style="color:var(--muted)">미처리</span>'}</div></div>${ch}</div></div>`;
+  }
+
+  if(type==='supplement') return `<div class="card"><div class="card-header"><div class="card-name">${item.name||'<span class="empty">미입력</span>'}</div><div style="display:flex;align-items:center;gap:6px"><span class="status-pill ${item.done?'done':'undone'}"><span class="dot"></span>${item.done?'보완완료':'미완료'}</span><div class="card-no">#${idx+1}</div></div></div><div class="card-body"><div class="detail-row"><div class="detail-label">내용</div><div class="detail-value highlight">${item.detail||'-'}</div></div>${item.result?`<div class="detail-row"><div class="detail-label">결과</div><div class="detail-value">${item.result}</div></div>`:''}</div></div>`;
+
+  return `<div class="card"><div class="card-header"><div class="card-name">${item.name||'<span class="empty">미입력</span>'}</div><div class="card-no">#${idx+1}</div></div><div class="card-body"><div class="detail-row"><div class="detail-label">내용</div><div class="detail-value highlight">${item.detail||'-'}</div></div><div class="detail-row"><div class="detail-label">결과</div><div class="detail-value">${item.result||'<span style="color:var(--muted)">미처리</span>'}</div></div></div></div>`;
+}
+
+function updateTrackPos(animate){
+  const track = document.getElementById('swipeTrack');
+  if(animate) track.classList.remove('dragging');
+  else track.classList.add('dragging');
+  setTimeout(()=>{
+    track.classList.remove('dragging');
+    track.style.transform = `translateX(${-activeIdx * 100}%)`;
+  }, animate ? 0 : 10);
+}
+
+function goTo(i){
+  if(i<0||i>=SHEETS.length) return;
+  activeIdx = i;
+  document.getElementById('hSub').textContent = SHEETS[i].date + ' 기준';
+  renderTabs();
+  renderDots();
+  renderAllPages();
+  updateTrackPos(true);
+  hideHint();
+}
+
+function setCase(si,ci){caseIdxMap[si]=ci;renderAllPages()}
+function setPhase(si,p){phaseMap[si]=p;renderAllPages()}
+
+function hideHint(){
+  const h=document.getElementById('swipeHint');
+  if(h) h.style.display='none';
+}
+
+const container = document.getElementById('swipeContainer');
+
+container.addEventListener('touchstart', e=>{
+  startX = e.touches[0].clientX;
+  isDragging = true;
+  document.getElementById('swipeTrack').classList.add('dragging');
+}, {passive:true});
+
+container.addEventListener('touchmove', e=>{
+  if(!isDragging) return;
+  currentX = e.touches[0].clientX;
+  const diff = currentX - startX;
+  const pct = -activeIdx * 100 + (diff / container.offsetWidth) * 100;
+  document.getElementById('swipeTrack').style.transform = `translateX(${pct}%)`;
+}, {passive:true});
+
+container.addEventListener('touchend', e=>{
+  if(!isDragging) return;
+  isDragging = false;
+  const diff = currentX - startX;
+  if(Math.abs(diff) > THRESHOLD){
+    if(diff < 0 && activeIdx < SHEETS.length-1) goTo(activeIdx+1);
+    else if(diff > 0 && activeIdx > 0) goTo(activeIdx-1);
+    else { updateTrackPos(true); }
+  } else {
+    updateTrackPos(true);
+  }
+  startX=0; currentX=0;
+});
+
+let mouseDown=false, mouseStartX=0, mouseCurrentX=0;
+container.addEventListener('mousedown',e=>{mouseDown=true;mouseStartX=e.clientX;document.getElementById('swipeTrack').classList.add('dragging')});
+container.addEventListener('mousemove',e=>{
+  if(!mouseDown) return;
+  mouseCurrentX=e.clientX;
+  const diff=mouseCurrentX-mouseStartX;
+  const pct=-activeIdx*100+(diff/container.offsetWidth)*100;
+  document.getElementById('swipeTrack').style.transform=`translateX(${pct}%)`;
+});
+container.addEventListener('mouseup',e=>{
+  if(!mouseDown) return;
+  mouseDown=false;
+  const diff=mouseCurrentX-mouseStartX;
+  if(Math.abs(diff)>THRESHOLD){
+    if(diff<0&&activeIdx<SHEETS.length-1) goTo(activeIdx+1);
+    else if(diff>0&&activeIdx>0) goTo(activeIdx-1);
+    else updateTrackPos(true);
+  } else updateTrackPos(true);
+  mouseStartX=0;mouseCurrentX=0;
+});
+container.addEventListener('mouseleave',()=>{
+  if(mouseDown){mouseDown=false;updateTrackPos(true);mouseStartX=0;mouseCurrentX=0}
+});
+
+document.getElementById('hSub').textContent = '';
+loadData();
+</script>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</body>
+</html>

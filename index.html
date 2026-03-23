@@ -7,8 +7,14 @@
 <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f4f3f0;--card:#fff;--text:#1a1a1a;--sub:#555;--muted:#999;--border:#e5e3de;--accent:#2b5592;--accent-light:#eaf1fb;--before-c:#5a6a80;--before-bg:#f0f2f5;--before-bd:#d0d6de;--after-c:#d04818;--after-bg:#fff0e8;--after-bd:#f0b090;--cancel-c:#c74444;--change-c:#b87a1a;--supp-c:#1e8858;--erp-c:#6060b0;--cancel-bg:#fce8e8;--change-bg:#fef4de;--supp-bg:#e5f5ed;--erp-bg:#eeeef8;--done:#1e8858;--done-bg:#e5f5ed;--undone:#c74444;--undone-bg:#fce8e8;--r:12px;--rs:8px}
-[data-theme="dark"]{--bg:#1a1a1e;--card:#26262b;--text:#e8e8e8;--sub:#aaa;--muted:#666;--border:#3a3a40;--accent:#6ba3e8;--accent-light:#1e2d42;--before-c:#8899aa;--before-bg:#22252a;--before-bd:#3a4050;--after-c:#f08050;--after-bg:#3a2218;--after-bd:#805030;--cancel-c:#e87070;--change-c:#dba050;--supp-c:#50c080;--erp-c:#9090d0;--cancel-bg:#3a2020;--change-bg:#3a2e18;--supp-bg:#1a3020;--erp-bg:#28283a;--done:#50c080;--done-bg:#1a3020;--undone:#e87070;--undone-bg:#3a2020}
+:root{--bg:#f4f3f0;--card:#fff;--text:#1a1a1a;--sub:#555;--muted:#999;--border:#e5e3de;--accent:#2b5592;--accent-light:#eaf1fb;--before-c:#5a6a80;--before-bg:#f0f2f5;--before-bd:#d0d6de;
+--after-c:#fff;--after-bg:#e8720a;--after-bd:#d06508;--after-card:#f5a54a;--after-card-bd:#e8920a;--after-text:#fff;--after-sub:rgba(255,255,255,0.8);
+--erp-sec-bg:#f0eaff;--erp-sec-bd:#c8b8e8;--erp-sec-c:#5a48a0;--erp-card:#fff;--erp-card-bd:#d8d0ee;
+--cancel-c:#c74444;--change-c:#b87a1a;--supp-c:#1e8858;--erp-c:#6060b0;--cancel-bg:#fce8e8;--change-bg:#fef4de;--supp-bg:#e5f5ed;--erp-bg:#eeeef8;--done:#1e8858;--done-bg:#e5f5ed;--undone:#c74444;--undone-bg:#fce8e8;--r:12px;--rs:8px}
+[data-theme="dark"]{--bg:#1a1a1e;--card:#26262b;--text:#e8e8e8;--sub:#aaa;--muted:#666;--border:#3a3a40;--accent:#6ba3e8;--accent-light:#1e2d42;--before-c:#8899aa;--before-bg:#22252a;--before-bd:#3a4050;
+--after-bg:#a04500;--after-bd:#803800;--after-card:#b85a10;--after-card-bd:#904808;--after-text:#fff;--after-sub:rgba(255,255,255,0.85);
+--erp-sec-bg:#2a2540;--erp-sec-bd:#4a4070;--erp-sec-c:#b0a0e0;--erp-card:#322850;--erp-card-bd:#4a3870;
+--cancel-c:#e87070;--change-c:#dba050;--supp-c:#50c080;--erp-c:#9090d0;--cancel-bg:#3a2020;--change-bg:#3a2e18;--supp-bg:#1a3020;--erp-bg:#28283a;--done:#50c080;--done-bg:#1a3020;--undone:#e87070;--undone-bg:#3a2020}
 body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;overflow-x:hidden;transition:background .3s,color .3s}
 .app{max-width:480px;margin:0 auto;min-height:100vh}
 .top{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:1px solid var(--border);transition:background .3s}
@@ -40,9 +46,29 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .si{display:flex;align-items:center;gap:3px}.sn{font-weight:800;font-size:15px}
 .ps{margin:6px 16px;border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
 .ph{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:14px;font-weight:700}
-.ph.bf{background:var(--before-bg);color:var(--before-c)}.ph.af{background:var(--after-bg);color:var(--after-c)}
+.ph.bf{background:var(--before-bg);color:var(--before-c)}
 .pc{font-size:11px;font-weight:600;opacity:.7}
 .pb{padding:6px 8px}
+/* 입력 후 오렌지 */
+.ps.af-sec{border-color:var(--after-bd)}
+.ps.af-sec .ph{background:var(--after-bg);color:var(--after-c)}
+.ps.af-sec .pb{background:var(--after-bg)}
+.ps.af-sec .cl{background:rgba(255,255,255,0.25);color:#fff}
+.ps.af-sec .ir{background:var(--after-card);border-color:var(--after-card-bd);color:var(--after-text)}
+.ps.af-sec .in{color:var(--after-text)}
+.ps.af-sec .ig{background:rgba(255,255,255,0.3);color:#fff}
+.ps.af-sec .id{color:var(--after-sub)}
+.ps.af-sec .is.dn{background:rgba(255,255,255,0.3);color:#fff}
+.ps.af-sec .is.un{background:rgba(255,255,255,0.25);color:#ffe0c0}
+/* 오등록 별도 보라색 박스 */
+.ps.erp-sec{border-color:var(--erp-sec-bd)}
+.ps.erp-sec .ph{background:var(--erp-sec-bg);color:var(--erp-sec-c)}
+.ps.erp-sec .pb{background:var(--erp-sec-bg)}
+.ps.erp-sec .cl{background:rgba(90,72,160,0.15);color:var(--erp-sec-c)}
+.ps.erp-sec .ir{background:var(--erp-card);border-color:var(--erp-card-bd)}
+.ps.erp-sec .in{color:var(--erp-sec-c)}
+.ps.erp-sec .ig{background:rgba(90,72,160,0.12);color:var(--erp-sec-c)}
+.ps.erp-sec .id{color:var(--sub)}
 .cg{margin-bottom:4px}
 .cl{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;margin-bottom:2px}
 .cl.cancel{background:var(--cancel-bg);color:var(--cancel-c)}.cl.change{background:var(--change-bg);color:var(--change-c)}.cl.supplement{background:var(--supp-bg);color:var(--supp-c)}.cl.erp{background:var(--erp-bg);color:var(--erp-c)}
@@ -73,21 +99,13 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
   <div class="ca" id="ca"></div>
 </div>
 <script>
-// ★ 새 배포 URL로 업데이트
 var API='https://script.google.com/macros/s/AKfycbwBVJW6pWIQFryBrLOYDMJurZS0ajKF2kQFEMPcM6jdoxDyogb7nMUKdEdgM-3t6UkDog/exec';
 var S=[],ti=0,ci=[];
 
 function tog(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'':'dark');document.getElementById('ti').textContent=d?'🌙':'☀️';try{localStorage.setItem('t',d?'l':'d')}catch(e){}}
 try{if(localStorage.getItem('t')==='d'){document.documentElement.setAttribute('data-theme','dark');window.addEventListener('DOMContentLoaded',function(){document.getElementById('ti').textContent='☀️'})}}catch(e){}
 
-// 이름 파싱: "1홍옥수" → 이름:"홍옥수", 구좌수:1
-// "2권정원" → 이름:"권정원", 구좌수:2
-function pn(raw){
-  if(!raw)return{n:'',g:0};
-  var s=String(raw).trim();
-  var m=s.match(/^(\d+)(.+)$/);
-  return m?{n:m[2],g:parseInt(m[1])}:{n:s,g:0};
-}
+function pn(raw){if(!raw)return{n:'',g:0};var s=String(raw).trim(),m=s.match(/^(\d+)(.+)$/);return m?{n:m[2],g:parseInt(m[1])}:{n:s,g:0}}
 
 async function load(){
   var m=document.getElementById('msg');
@@ -95,9 +113,7 @@ async function load(){
   try{
     var r=await fetch(API);var d=await r.json();
     if(!d||!d.length){m.innerHTML='<div style="text-align:center;padding:60px;color:var(--muted)">데이터 없음</div>';return}
-    // Apps Script가 시트 탭 순서대로 보내주고, 강연회 이후는 이미 제거됨
-    S=d;
-    ti=0;ci=S.map(function(){return 0});
+    S=d;ti=0;ci=S.map(function(){return 0});
     if(S.length)document.getElementById('hs').textContent=S[0].date+' · '+S[0].org;
     m.innerHTML='';ren();
   }catch(e){m.innerHTML='<div style="text-align:center;padding:60px;color:var(--cancel-c)"><span style="font-size:13px">불러오기 실패</span><br><br><button onclick="load()" style="padding:8px 20px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;cursor:pointer">다시 시도</button></div>'}
@@ -105,6 +121,7 @@ async function load(){
 
 function cnt(s){var n=0;s.cases.forEach(function(c){['before','after'].forEach(function(p){['cancel','change','supplement','erp'].forEach(function(k){n+=c[p][k].length})})});return n}
 function cntp(c,p){var n=0;['cancel','change','supplement','erp'].forEach(function(k){n+=c[p][k].length});return n}
+function cntErp(cas){return cas.before.erp.length+cas.after.erp.length}
 
 function ren(){
   if(!S.length)return;
@@ -116,31 +133,57 @@ function ren(){
 
 function rc(){
   var sh=S[ti],c=ci[ti],cas=sh.cases[c];
-  // 건수 합산
   var ac={cancel:0,change:0,supplement:0,erp:0};
   ['before','after'].forEach(function(p){['cancel','change','supplement','erp'].forEach(function(k){ac[k]+=cas[p][k].length})});
 
-  // 차수 버튼
   var ch='';
   if(sh.cases.length>1)ch='<div class="cr">'+sh.cases.map(function(x,j){return'<div class="ct '+(j===c?'on':'')+'" onclick="pc('+j+')">'+x.no+'차</div>'}).join('')+'</div>';
 
-  // 요약
   var sm='<div class="sb"><div class="si"><span class="sn" style="color:var(--cancel-c)">'+ac.cancel+'</span><span style="color:var(--muted)">취소</span></div><div class="si"><span class="sn" style="color:var(--change-c)">'+ac.change+'</span><span style="color:var(--muted)">변경</span></div><div class="si"><span class="sn" style="color:var(--supp-c)">'+ac.supplement+'</span><span style="color:var(--muted)">보완</span></div><div class="si"><span class="sn" style="color:var(--erp-c)">'+ac.erp+'</span><span style="color:var(--muted)">오등록</span></div></div>';
 
-  var bt=cntp(cas,'before'),at=cntp(cas,'after');
+  // 입력 전 (오등록 제외)
+  var bfItems=bpNoErp(cas.before);
+  var bfTotal=bfItems.cancel.length+bfItems.change.length+bfItems.supplement.length;
+  var bfHtml=bfTotal>0?buildBox(bfItems,'bf',bfTotal,'입력 전',''):'';
+
+  // 입력 후 (오등록 제외) - 오렌지
+  var afItems=bpNoErp(cas.after);
+  var afTotal=afItems.cancel.length+afItems.change.length+afItems.supplement.length;
+  var afHtml=afTotal>0?buildBox(afItems,'af',afTotal,'입력 후',' af-sec'):'';
+
+  // 오등록 별도 박스 (입력전+후 합산)
+  var allErp=cas.before.erp.concat(cas.after.erp);
+  var erpHtml=allErp.length>0?buildErpBox(allErp):'';
+
   document.getElementById('hs').textContent=sh.date+' · '+sh.org;
-  document.getElementById('ca').innerHTML=ch+sm+bp(cas.before,'bf',bt,'입력 전')+bp(cas.after,'af',at,'입력 후');
+  document.getElementById('ca').innerHTML=ch+sm+bfHtml+afHtml+erpHtml;
 }
 
-function bp(ph,cls,tot,lbl){
-  if(tot===0)return'';
+// 오등록 제외한 데이터 반환
+function bpNoErp(phase){
+  return{cancel:phase.cancel,change:phase.change,supplement:phase.supplement};
+}
+
+// 입력전/후 박스 빌드 (오등록 제외)
+function buildBox(items,cls,tot,lbl,extra){
   var b='';
-  b+=bc('취소','cancel',ph.cancel);
-  b+=bc('변경/추가','change',ph.change);
-  b+=bc('보완','supplement',ph.supplement);
-  b+=bc('오등록','erp',ph.erp);
+  b+=bc('취소','cancel',items.cancel);
+  b+=bc('변경/추가','change',items.change);
+  b+=bc('보완','supplement',items.supplement);
   if(!b)return'';
-  return'<div class="ps"><div class="ph '+cls+'"><span>'+lbl+'</span><span class="pc">'+tot+'건</span></div><div class="pb">'+b+'</div></div>';
+  return'<div class="ps'+extra+'"><div class="ph '+cls+'"><span>'+lbl+'</span><span class="pc">'+tot+'건</span></div><div class="pb">'+b+'</div></div>';
+}
+
+// 오등록 별도 보라색 박스
+function buildErpBox(items){
+  var rows=items.map(function(it){
+    var p=pn(it.name);
+    var nm=p.n?'<span class="in">'+p.n+'</span>':'<span class="in" style="opacity:0.6">미입력</span>';
+    var gz=p.g?'<span class="ig">'+p.g+'구좌</span>':'';
+    var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';
+    return'<div class="ir">'+nm+gz+dt+'</div>';
+  }).join('');
+  return'<div class="ps erp-sec"><div class="ph"><span>오등록 (ERP)</span><span class="pc">'+items.length+'건</span></div><div class="pb">'+rows+'</div></div>';
 }
 
 function bc(lbl,type,items){
@@ -148,24 +191,26 @@ function bc(lbl,type,items){
   var rows=items.map(function(it){
     var p=pn(it.name);
     var nm=p.n?'<span class="in">'+p.n+'</span>':'<span class="in" style="color:var(--muted)">미입력</span>';
-    // 구좌수: 이름 앞 숫자가 구좌수
     var gz=p.g?'<span class="ig">'+p.g+'구좌</span>':'';
 
-    // 취소, 변경/추가: 이름 + 구좌수만
-    if(type==='cancel'||type==='change')return'<div class="ir">'+nm+gz+'</div>';
+    // ★ 변경/추가: 이름 + 구좌수 + 내용(구좌변경/추가 세부사항)
+    if(type==='change'){
+      var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';
+      return'<div class="ir">'+nm+gz+dt+'</div>';
+    }
+
+    // 취소: 이름 + 구좌수 + 내용
+    if(type==='cancel'){
+      var dt2=it.detail?'<span class="id">'+it.detail+'</span>':'';
+      return'<div class="ir">'+nm+gz+dt2+'</div>';
+    }
 
     // 보완: 이름 + 구좌수 + 내용 + 등록완료/미완료
     if(type==='supplement'){
       var dn=it.done||(it.result&&it.result.indexOf('완료')>-1);
       var st=dn?'<span class="is dn">등록완료</span>':'<span class="is un">미완료</span>';
-      var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';
-      return'<div class="ir">'+nm+gz+dt+st+'</div>';
-    }
-
-    // 오등록: 이름 + 구좌수 + 내용
-    if(type==='erp'){
-      var dt2=it.detail?'<span class="id">'+it.detail+'</span>':'';
-      return'<div class="ir">'+nm+gz+dt2+'</div>';
+      var dt3=it.detail?'<span class="id">'+it.detail+'</span>':'';
+      return'<div class="ir">'+nm+gz+dt3+st+'</div>';
     }
     return'';
   }).join('');

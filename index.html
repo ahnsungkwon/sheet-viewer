@@ -49,7 +49,6 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .ph.bf{background:var(--before-bg);color:var(--before-c)}
 .pc{font-size:11px;font-weight:600;opacity:.7}
 .pb{padding:6px 8px}
-/* 입력 후 오렌지 */
 .ps.af-sec{border-color:var(--after-bd)}
 .ps.af-sec .ph{background:var(--after-bg);color:var(--after-c)}
 .ps.af-sec .pb{background:var(--after-bg)}
@@ -60,7 +59,6 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .ps.af-sec .id{color:var(--after-sub)}
 .ps.af-sec .is.dn{background:rgba(255,255,255,0.3);color:#fff}
 .ps.af-sec .is.un{background:rgba(255,255,255,0.25);color:#ffe0c0}
-/* 오등록 별도 보라색 박스 */
 .ps.erp-sec{border-color:var(--erp-sec-bd)}
 .ps.erp-sec .ph{background:var(--erp-sec-bg);color:var(--erp-sec-c)}
 .ps.erp-sec .pb{background:var(--erp-sec-bg)}
@@ -99,7 +97,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
   <div class="ca" id="ca"></div>
 </div>
 <script>
-var API='https://script.google.com/macros/s/AKfycbwBVJW6pWIQFryBrLOYDMJurZS0ajKF2kQFEMPcM6jdoxDyogb7nMUKdEdgM-3t6UkDog/exec';
+var API='https://script.google.com/macros/s/AKfycbzayQOd-IY6NCcKxR3q_JjVCBgJK16-4KjzunlQpsb97CTYmfOGsVhOAqgckotvw0wK8g/exec';
 var S=[],ti=0,ci=[];
 
 function tog(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'':'dark');document.getElementById('ti').textContent=d?'🌙':'☀️';try{localStorage.setItem('t',d?'l':'d')}catch(e){}}
@@ -121,7 +119,6 @@ async function load(){
 
 function cnt(s){var n=0;s.cases.forEach(function(c){['before','after'].forEach(function(p){['cancel','change','supplement','erp'].forEach(function(k){n+=c[p][k].length})})});return n}
 function cntp(c,p){var n=0;['cancel','change','supplement','erp'].forEach(function(k){n+=c[p][k].length});return n}
-function cntErp(cas){return cas.before.erp.length+cas.after.erp.length}
 
 function ren(){
   if(!S.length)return;
@@ -141,17 +138,13 @@ function rc(){
 
   var sm='<div class="sb"><div class="si"><span class="sn" style="color:var(--cancel-c)">'+ac.cancel+'</span><span style="color:var(--muted)">취소</span></div><div class="si"><span class="sn" style="color:var(--change-c)">'+ac.change+'</span><span style="color:var(--muted)">변경</span></div><div class="si"><span class="sn" style="color:var(--supp-c)">'+ac.supplement+'</span><span style="color:var(--muted)">보완</span></div><div class="si"><span class="sn" style="color:var(--erp-c)">'+ac.erp+'</span><span style="color:var(--muted)">오등록</span></div></div>';
 
-  // 입력 전 (오등록 제외)
-  var bfItems=bpNoErp(cas.before);
-  var bfTotal=bfItems.cancel.length+bfItems.change.length+bfItems.supplement.length;
-  var bfHtml=bfTotal>0?buildBox(bfItems,'bf',bfTotal,'입력 전',''):'';
+  var bfData={cancel:cas.before.cancel,change:cas.before.change,supplement:cas.before.supplement};
+  var afData={cancel:cas.after.cancel,change:cas.after.change,supplement:cas.after.supplement};
+  var bfTot=bfData.cancel.length+bfData.change.length+bfData.supplement.length;
+  var afTot=afData.cancel.length+afData.change.length+afData.supplement.length;
+  var bfHtml=bfTot>0?buildBox(bfData,'bf',bfTot,'입력 전',''):'';
+  var afHtml=afTot>0?buildBox(afData,'af',afTot,'입력 후',' af-sec'):'';
 
-  // 입력 후 (오등록 제외) - 오렌지
-  var afItems=bpNoErp(cas.after);
-  var afTotal=afItems.cancel.length+afItems.change.length+afItems.supplement.length;
-  var afHtml=afTotal>0?buildBox(afItems,'af',afTotal,'입력 후',' af-sec'):'';
-
-  // 오등록 별도 박스 (입력전+후 합산)
   var allErp=cas.before.erp.concat(cas.after.erp);
   var erpHtml=allErp.length>0?buildErpBox(allErp):'';
 
@@ -159,12 +152,6 @@ function rc(){
   document.getElementById('ca').innerHTML=ch+sm+bfHtml+afHtml+erpHtml;
 }
 
-// 오등록 제외한 데이터 반환
-function bpNoErp(phase){
-  return{cancel:phase.cancel,change:phase.change,supplement:phase.supplement};
-}
-
-// 입력전/후 박스 빌드 (오등록 제외)
 function buildBox(items,cls,tot,lbl,extra){
   var b='';
   b+=bc('취소','cancel',items.cancel);
@@ -174,7 +161,6 @@ function buildBox(items,cls,tot,lbl,extra){
   return'<div class="ps'+extra+'"><div class="ph '+cls+'"><span>'+lbl+'</span><span class="pc">'+tot+'건</span></div><div class="pb">'+b+'</div></div>';
 }
 
-// 오등록 별도 보라색 박스
 function buildErpBox(items){
   var rows=items.map(function(it){
     var p=pn(it.name);
@@ -192,26 +178,9 @@ function bc(lbl,type,items){
     var p=pn(it.name);
     var nm=p.n?'<span class="in">'+p.n+'</span>':'<span class="in" style="color:var(--muted)">미입력</span>';
     var gz=p.g?'<span class="ig">'+p.g+'구좌</span>':'';
-
-    // ★ 변경/추가: 이름 + 구좌수 + 내용(구좌변경/추가 세부사항)
-    if(type==='change'){
-      var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';
-      return'<div class="ir">'+nm+gz+dt+'</div>';
-    }
-
-    // 취소: 이름 + 구좌수 + 내용
-    if(type==='cancel'){
-      var dt2=it.detail?'<span class="id">'+it.detail+'</span>':'';
-      return'<div class="ir">'+nm+gz+dt2+'</div>';
-    }
-
-    // 보완: 이름 + 구좌수 + 내용 + 등록완료/미완료
-    if(type==='supplement'){
-      var dn=it.done||(it.result&&it.result.indexOf('완료')>-1);
-      var st=dn?'<span class="is dn">등록완료</span>':'<span class="is un">미완료</span>';
-      var dt3=it.detail?'<span class="id">'+it.detail+'</span>':'';
-      return'<div class="ir">'+nm+gz+dt3+st+'</div>';
-    }
+    if(type==='change'){var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt+'</div>'}
+    if(type==='cancel'){var dt2=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt2+'</div>'}
+    if(type==='supplement'){var dn=it.done||(it.result&&it.result.indexOf('완료')>-1);var st=dn?'<span class="is dn">등록완료</span>':'<span class="is un">미완료</span>';var dt3=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt3+st+'</div>'}
     return'';
   }).join('');
   return'<div class="cg"><div class="cl '+type+'">'+lbl+' '+items.length+'</div>'+rows+'</div>';

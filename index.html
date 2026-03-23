@@ -47,7 +47,8 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .cl{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;margin-bottom:2px}
 .cl.cancel{background:var(--cancel-bg);color:var(--cancel-c)}.cl.change{background:var(--change-bg);color:var(--change-c)}.cl.supplement{background:var(--supp-bg);color:var(--supp-c)}.cl.erp{background:var(--erp-bg);color:var(--erp-c)}
 .ir{display:flex;align-items:center;gap:6px;padding:5px 10px;margin:2px 0;background:var(--card);border-radius:var(--rs);border:1px solid var(--border);font-size:13px;transition:background .3s}
-.in{font-weight:700;flex-shrink:0}.ig{font-size:10px;font-weight:700;background:var(--accent-light);color:var(--accent);padding:1px 5px;border-radius:4px;flex-shrink:0}
+.in{font-weight:700;flex-shrink:0}
+.ig{font-size:10px;font-weight:700;background:var(--accent-light);color:var(--accent);padding:1px 5px;border-radius:4px;flex-shrink:0}
 .id{color:var(--sub);font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .is{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;flex-shrink:0}
 .is.dn{background:var(--done-bg);color:var(--done)}.is.un{background:var(--undone-bg);color:var(--undone)}
@@ -72,13 +73,21 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
   <div class="ca" id="ca"></div>
 </div>
 <script>
-var API='https://script.google.com/macros/s/AKfycbzztlXhtV0kALZUZlkKLZpfXCjd5-35N6p-5m9gaL2BhzHFCIFk4ZbYEUI21yJqj2S7_Q/exec';
+// ★ 새 배포 URL로 업데이트
+var API='https://script.google.com/macros/s/AKfycbwBVJW6pWIQFryBrLOYDMJurZS0ajKF2kQFEMPcM6jdoxDyogb7nMUKdEdgM-3t6UkDog/exec';
 var S=[],ti=0,ci=[];
 
 function tog(){var h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'':'dark');document.getElementById('ti').textContent=d?'🌙':'☀️';try{localStorage.setItem('t',d?'l':'d')}catch(e){}}
 try{if(localStorage.getItem('t')==='d'){document.documentElement.setAttribute('data-theme','dark');window.addEventListener('DOMContentLoaded',function(){document.getElementById('ti').textContent='☀️'})}}catch(e){}
 
-function pn(raw){if(!raw)return{n:'',g:0};var s=String(raw).trim(),m=s.match(/^(\d+)(.+)$/);return m?{n:m[2],g:parseInt(m[1])}:{n:s,g:0}}
+// 이름 파싱: "1홍옥수" → 이름:"홍옥수", 구좌수:1
+// "2권정원" → 이름:"권정원", 구좌수:2
+function pn(raw){
+  if(!raw)return{n:'',g:0};
+  var s=String(raw).trim();
+  var m=s.match(/^(\d+)(.+)$/);
+  return m?{n:m[2],g:parseInt(m[1])}:{n:s,g:0};
+}
 
 async function load(){
   var m=document.getElementById('msg');
@@ -86,7 +95,7 @@ async function load(){
   try{
     var r=await fetch(API);var d=await r.json();
     if(!d||!d.length){m.innerHTML='<div style="text-align:center;padding:60px;color:var(--muted)">데이터 없음</div>';return}
-    // ★ 탭 순서: Apps Script가 시트 탭 순서대로 보내주므로 정렬하지 않음
+    // Apps Script가 시트 탭 순서대로 보내주고, 강연회 이후는 이미 제거됨
     S=d;
     ti=0;ci=S.map(function(){return 0});
     if(S.length)document.getElementById('hs').textContent=S[0].date+' · '+S[0].org;
@@ -107,23 +116,29 @@ function ren(){
 
 function rc(){
   var sh=S[ti],c=ci[ti],cas=sh.cases[c];
+  // 건수 합산
   var ac={cancel:0,change:0,supplement:0,erp:0};
   ['before','after'].forEach(function(p){['cancel','change','supplement','erp'].forEach(function(k){ac[k]+=cas[p][k].length})});
 
+  // 차수 버튼
   var ch='';
   if(sh.cases.length>1)ch='<div class="cr">'+sh.cases.map(function(x,j){return'<div class="ct '+(j===c?'on':'')+'" onclick="pc('+j+')">'+x.no+'차</div>'}).join('')+'</div>';
 
+  // 요약
   var sm='<div class="sb"><div class="si"><span class="sn" style="color:var(--cancel-c)">'+ac.cancel+'</span><span style="color:var(--muted)">취소</span></div><div class="si"><span class="sn" style="color:var(--change-c)">'+ac.change+'</span><span style="color:var(--muted)">변경</span></div><div class="si"><span class="sn" style="color:var(--supp-c)">'+ac.supplement+'</span><span style="color:var(--muted)">보완</span></div><div class="si"><span class="sn" style="color:var(--erp-c)">'+ac.erp+'</span><span style="color:var(--muted)">오등록</span></div></div>';
 
   var bt=cntp(cas,'before'),at=cntp(cas,'after');
+  document.getElementById('hs').textContent=sh.date+' · '+sh.org;
   document.getElementById('ca').innerHTML=ch+sm+bp(cas.before,'bf',bt,'입력 전')+bp(cas.after,'af',at,'입력 후');
 }
 
 function bp(ph,cls,tot,lbl){
   if(tot===0)return'';
   var b='';
-  b+=bc('취소','cancel',ph.cancel);b+=bc('변경/추가','change',ph.change);
-  b+=bc('보완','supplement',ph.supplement);b+=bc('오등록','erp',ph.erp);
+  b+=bc('취소','cancel',ph.cancel);
+  b+=bc('변경/추가','change',ph.change);
+  b+=bc('보완','supplement',ph.supplement);
+  b+=bc('오등록','erp',ph.erp);
   if(!b)return'';
   return'<div class="ps"><div class="ph '+cls+'"><span>'+lbl+'</span><span class="pc">'+tot+'건</span></div><div class="pb">'+b+'</div></div>';
 }
@@ -133,16 +148,31 @@ function bc(lbl,type,items){
   var rows=items.map(function(it){
     var p=pn(it.name);
     var nm=p.n?'<span class="in">'+p.n+'</span>':'<span class="in" style="color:var(--muted)">미입력</span>';
+    // 구좌수: 이름 앞 숫자가 구좌수
     var gz=p.g?'<span class="ig">'+p.g+'구좌</span>':'';
+
+    // 취소, 변경/추가: 이름 + 구좌수만
     if(type==='cancel'||type==='change')return'<div class="ir">'+nm+gz+'</div>';
-    if(type==='supplement'){var dn=it.done||(it.result&&it.result.indexOf('완료')>-1);var st=dn?'<span class="is dn">등록완료</span>':'<span class="is un">미완료</span>';var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt+st+'</div>'}
-    if(type==='erp'){var dt2=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt2+'</div>'}
+
+    // 보완: 이름 + 구좌수 + 내용 + 등록완료/미완료
+    if(type==='supplement'){
+      var dn=it.done||(it.result&&it.result.indexOf('완료')>-1);
+      var st=dn?'<span class="is dn">등록완료</span>':'<span class="is un">미완료</span>';
+      var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';
+      return'<div class="ir">'+nm+gz+dt+st+'</div>';
+    }
+
+    // 오등록: 이름 + 구좌수 + 내용
+    if(type==='erp'){
+      var dt2=it.detail?'<span class="id">'+it.detail+'</span>':'';
+      return'<div class="ir">'+nm+gz+dt2+'</div>';
+    }
     return'';
   }).join('');
   return'<div class="cg"><div class="cl '+type+'">'+lbl+' '+items.length+'</div>'+rows+'</div>';
 }
 
-function go(i){if(i<0||i>=S.length||i===ti)return;var el=document.getElementById('ca'),dir=i>ti?'ol':'or';el.classList.add(dir);setTimeout(function(){ti=i;document.getElementById('hs').textContent=S[i].date+' · '+S[i].org;ren();el.classList.remove(dir);window.scrollTo({top:0,behavior:'smooth'})},150)}
+function go(i){if(i<0||i>=S.length||i===ti)return;var el=document.getElementById('ca'),dir=i>ti?'ol':'or';el.classList.add(dir);setTimeout(function(){ti=i;ren();el.classList.remove(dir);window.scrollTo({top:0,behavior:'smooth'})},150)}
 function pc(i){ci[ti]=i;rc()}
 
 var sx=0,cx=0,dr=false,TH=50,z=document.getElementById('sz');

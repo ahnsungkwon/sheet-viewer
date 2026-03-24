@@ -115,6 +115,22 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .is.dn{background:var(--done-bg);color:var(--done)}
 .is.un{background:var(--undone-bg);color:var(--undone)}
 
+.help-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);justify-content:center;align-items:flex-start;padding:16px}
+.help-overlay.show{display:flex}
+.help-box{background:var(--card);border-radius:20px;max-width:440px;width:100%;max-height:85vh;overflow-y:auto;padding:28px 22px;position:relative;margin-top:36px;box-shadow:var(--shadow)}
+.help-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;color:var(--muted);box-shadow:var(--shadow-sm)}
+.help-close:active{transform:scale(0.9)}
+.help-title{font-size:18px;font-weight:900;color:var(--accent);margin-bottom:20px;letter-spacing:-0.3px}
+.help-sec{margin-bottom:18px}
+.help-sec h3{font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.help-sec p{font-size:13px;color:var(--sub);line-height:1.75;margin-bottom:3px}
+.help-sec p b{color:var(--text);font-weight:700}
+.help-badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;vertical-align:middle}
+.help-hr{height:1px;background:var(--border);margin:14px 0}
+.help-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--sub)}
+.help-dot{width:14px;height:14px;border-radius:6px;flex-shrink:0}
+.help-key{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--bg);font-size:13px;box-shadow:var(--shadow-sm);flex-shrink:0}
+
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
@@ -124,7 +140,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
     <div class="hd">
       <div class="ht"><em>수정보완건</em></div>
       <div class="hs" id="hs"></div>
-      <div class="ha"><div class="hb" onclick="tog()"><span id="ti">🌙</span></div><div class="hb" onclick="load()">↻</div></div>
+      <div class="ha"><div class="hb" onclick="showHelp()">?</div><div class="hb" onclick="tog()"><span id="ti">🌙</span></div><div class="hb" onclick="load()">↻</div></div>
     </div>
     <div class="tabs" id="tabs"></div>
     <div class="sa">
@@ -135,7 +151,96 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
   <div id="msg"></div>
   <div class="ca" id="ca"></div>
 </div>
+<!-- 도움말 -->
+<div class="help-overlay" id="helpO" onclick="if(event.target===this)closeHelp()">
+<div class="help-box">
+<div class="help-close" onclick="closeHelp()">✕</div>
+<div class="help-title">사용법 안내</div>
+
+<div class="help-sec">
+<h3>📱 이 뷰어는 무엇인가요?</h3>
+<p>구글 시트의 <b>수정보완건 데이터</b>를 스마트폰에서 보기 편하게 보여주는 <b>조회 전용</b> 도구입니다.</p>
+<p>데이터의 등록·수정·삭제는 기존 <b>구글 시트</b>에서 하고, 여기서는 확인만 합니다.</p>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec">
+<h3>🔄 기관 탭 전환</h3>
+<p>상단의 <b>날짜+기관명 탭</b>을 터치하면 해당 기관으로 이동합니다.</p>
+<p>또는 탭 아래 <b>가로 바(━)</b>를 좌우로 드래그해도 전환됩니다.</p>
+<p>현재 위치는 <b>점(●●●)</b>으로 확인할 수 있습니다.</p>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec">
+<h3>1️⃣ 차수 선택</h3>
+<p>한 기관에 1차, 2차 등 여러 차수가 있으면 <b>버튼</b>이 나타납니다.</p>
+<p>터치하면 해당 차수의 데이터만 표시됩니다. 차수가 1개면 버튼이 나타나지 않습니다.</p>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec">
+<h3>📊 건수 요약</h3>
+<p>선택한 차수의 전체 건수를 색상별로 한눈에 보여줍니다.</p>
+<div class="help-row"><div class="help-dot" style="background:var(--cancel-c)"></div><b style="color:var(--text)">취소</b> 취소 요청 건</div>
+<div class="help-row"><div class="help-dot" style="background:var(--change-c)"></div><b style="color:var(--text)">변경</b> 구좌 변경·추가 건 (세부내용 표시)</div>
+<div class="help-row"><div class="help-dot" style="background:var(--supp-c)"></div><b style="color:var(--text)">보완</b> 서류·정보 보완 건 (완료 상태 표시)</div>
+<div class="help-row"><div class="help-dot" style="background:var(--erp-c)"></div><b style="color:var(--text)">오등록</b> ERP 오등록 건 (별도 보라색 박스)</div>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec">
+<h3>📋 화면 구성</h3>
+<p><b style="color:var(--before-c)">입력 전</b> (회색 박스) — 시트 등록 <b>전</b>에 발견된 수정보완 사항</p>
+<p><b style="color:#ea580c">입력 후</b> (오렌지 박스) — 등록 <b>후</b>에 발생한 수정보완 사항. 주목이 필요하여 강조됩니다.</p>
+<p><b style="color:var(--erp-sec-c)">오등록 ERP</b> (보라색 박스) — ERP 잘못 등록 건. 입력 전/후 합쳐서 표시됩니다.</p>
+<p>해당 건이 0건이면 해당 박스는 자동으로 숨겨집니다.</p>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec">
+<h3>👤 이름 앞 숫자 = 구좌수</h3>
+<p>시트에서 이름 앞에 붙은 숫자(예: <b>1</b>홍옥수, <b>2</b>권정원)는 해당 고객의 <b>구좌수</b>입니다.</p>
+<p>뷰어에서 <span class="help-badge" style="background:var(--accent-light);color:var(--accent)">1구좌</span> <span class="help-badge" style="background:var(--accent-light);color:var(--accent)">2구좌</span> 뱃지로 표시됩니다.</p>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec">
+<h3>✅ 보완 상태</h3>
+<p>보완건에는 처리 상태가 함께 표시됩니다.</p>
+<div class="help-row"><span class="help-badge" style="background:var(--done-bg);color:var(--done)">등록완료</span> 보완이 완료되어 등록 처리됨</div>
+<div class="help-row"><span class="help-badge" style="background:var(--undone-bg);color:var(--undone)">미완료</span> 아직 보완이 완료되지 않음</div>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec">
+<h3>🔘 상단 버튼</h3>
+<div class="help-row"><div class="help-key">?</div> <b style="color:var(--text)">사용법</b> — 이 안내 화면을 엽니다</div>
+<div class="help-row"><div class="help-key">🌙</div> <b style="color:var(--text)">다크 모드</b> — 어두운/밝은 화면 전환 (설정 자동 저장)</div>
+<div class="help-row"><div class="help-key">↻</div> <b style="color:var(--text)">새로고침</b> — 최신 시트 데이터를 다시 불러옵니다</div>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec">
+<h3>⏱️ 데이터 반영 시간</h3>
+<p>구글 시트를 수정하면 최대 <b>5분 이내</b>에 자동 반영됩니다.</p>
+<p>바로 확인하고 싶으면 <b>↻ 새로고침</b> 버튼을 눌러주세요.</p>
+<p>그래도 안 바뀌면 Apps Script에서 <b>clearCache</b> 함수를 실행하면 즉시 반영됩니다.</p>
+</div>
+<div class="help-hr"></div>
+
+<div class="help-sec" style="margin-bottom:0">
+<h3>💡 홈 화면에 추가 (앱처럼 사용)</h3>
+<p><b>아이폰(Safari):</b> 공유 버튼(□↑) → "홈 화면에 추가"</p>
+<p><b>안드로이드(Chrome):</b> 메뉴(⋮) → "홈 화면에 추가"</p>
+<p>홈 화면에서 앱처럼 바로 실행할 수 있습니다.</p>
+</div>
+</div>
+</div>
+
 <script>
+function showHelp(){document.getElementById('helpO').classList.add('show')}
+function closeHelp(){document.getElementById('helpO').classList.remove('show')}
 var API='https://script.google.com/macros/s/AKfycbwFLkJFrnXzaRUruG1OscqQTMDMroCJwilsZetxsz71GhcAZf9kZfoV0xvzhUTkms2-/exec';
 var S=[],ti=0,ci=[];
 

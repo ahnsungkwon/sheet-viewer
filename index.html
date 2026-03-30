@@ -328,7 +328,7 @@ function bc(lbl,type,items){
     var gz=p.g?'<span class="ig">'+p.g+'구좌</span>':'';
     if(type==='change'){var dt=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt+'</div>'}
     if(type==='cancel'){var dt2=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt2+'</div>'}
-    if(type==='supplement'){var dn=it.done||(it.result&&it.result.indexOf('완료')>-1);var st=dn?'<span class="is dn">등록완료</span>':'<span class="is un">미완료</span>';var dt3=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt3+st+'</div>'}
+    if(type==='supplement'){var dn=it.done||(it.result&&it.result.indexOf('완료')>-1);var cancelled=it.result&&it.result.indexOf('취소')>-1;var st=dn?'<span class="is dn">등록완료</span>':cancelled?'<span class="is dn">취소처리</span>':'<span class="is un">미완료</span>';var dt3=it.detail?'<span class="id">'+it.detail+'</span>':'';return'<div class="ir">'+nm+gz+dt3+st+'</div>'}
     return'';
   }).join('');
   return'<div class="cg"><div class="cl '+type+'">'+lbl+' '+items.length+'</div>'+rows+'</div>';
